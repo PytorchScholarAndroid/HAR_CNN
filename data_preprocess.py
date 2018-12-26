@@ -2,10 +2,18 @@
 """
     Created on 10:38 2018/11/10 
     @author: Jindong Wang
+    
+    Modified on 23:34 2018/12/25
+    @contributor: Matheus Jacques
+    add: create_validation_set(train_data, test_data, batch_size)
+    modify: load(batch_size=64)
 """
+
+# Imports
 
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
+from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import transforms
 
 
@@ -50,7 +58,7 @@ def load_data():
     else:
         # This for processing the dataset from scratch
         # After downloading the dataset, put it to somewhere that str_folder can find
-        str_folder = 'Your root folder' + 'UCI HAR Dataset/'
+        str_folder = '/home/jacquesmats/Documents/projects/HAR_CNN/' + 'UCI HAR Dataset/'
         INPUT_SIGNAL_TYPES = [
             "body_acc_x_",
             "body_acc_y_",
@@ -94,6 +102,27 @@ class data_loader(Dataset):
 
     def __len__(self):
         return len(self.samples)
+    
+def create_validation_set(train_data, test_data,batch_size):
+    # obtain training indices that will be used for validation
+    num_train = len(train_data)
+    indices = list(range(num_train))
+    np.random.shuffle(indices)
+    split = int(np.floor(0.2 * num_train)) # Validation Dataset set to 20%
+    train_idx, valid_idx = indices[split:], indices[:split]
+
+    # define samplers for obtaining training and validation batches
+    train_sampler = SubsetRandomSampler(train_idx)
+    valid_sampler = SubsetRandomSampler(valid_idx)
+
+    # prepare data loaders (combine dataset and sampler)
+    train_loader = DataLoader(train_data, batch_size=batch_size,
+        sampler=train_sampler)
+    valid_loader = DataLoader(train_data, batch_size=batch_size, 
+        sampler=valid_sampler)
+    test_loader = DataLoader(test_data, batch_size=batch_size)
+    
+    return train_loader, valid_loader, test_loader
 
 
 def load(batch_size=64):
@@ -103,8 +132,10 @@ def load(batch_size=64):
         transforms.ToTensor(),
         transforms.Normalize(mean=(0,0,0,0,0,0,0,0,0), std=(1,1,1,1,1,1,1,1,1))
     ])
+    
     train_set = data_loader(x_train, y_train, transform)
     test_set = data_loader(x_test, y_test, transform)
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, drop_last=True)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
-    return train_loader, test_loader
+    
+    train_loader, valid_loader, test_loader = create_validation_set(train_set, test_set,batch_size)
+    
+    return train_loader, valid_loader, test_loader
