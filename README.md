@@ -1,6 +1,6 @@
 # HAR_CNN
 
-this is official repository for Human Activity Recognition app using CNN
+this is official repository for CNN part of Human Activity Recognition app
 
 
 ### Prerequisites
