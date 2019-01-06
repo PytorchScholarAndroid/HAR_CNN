@@ -15,6 +15,8 @@ Python 3 is used during development anf following libraries are required to run 
 ## Built With
 
 * [pytorch](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+
+## Dataset
 * [UCI ](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones#) - Dataset used for training purpose
 
 ## Contributing
