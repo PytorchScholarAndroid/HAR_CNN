@@ -1,11 +1,11 @@
 # HAR_CNN
 
-this is official repository for CNN part of Human Activity Recognition app
+This is official repository for CNN part of Human Activity Recognition app
 
 
 ### Prerequisites
 
-Python 3 is used during development anf following libraries are required to run the code
+Python 3 is used during development and following libraries are required to run the code
 
 * pytorch
 * Matplotlib
